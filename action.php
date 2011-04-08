@@ -7,7 +7,7 @@
  * Modifications by Sergio (1 Apr 2007), an unidentified author, 
  * and  Niko Paltzer (15 Jan 2010).
  *
- *  brought up-to-date with currnet Dokuwiki Event changes
+ *  brought up-to-date with current Dokuwiki Event changes
  *  and event handling by Myron Turner (April 7 2011)
  *  turnermm02@shaw.ca     
  */
