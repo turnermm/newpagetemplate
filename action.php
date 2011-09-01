@@ -20,6 +20,7 @@ require_once(DOKU_PLUGIN.'action.php');
  
 class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
    var $done = false;
+   var $allow = true;
   /**
    * return some info
    */
@@ -44,6 +45,10 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
 
     $contr->register_hook('COMMON_PAGE_FROMTEMPLATE', 'BEFORE', $this, 'pagefromtemplate', array());
     $contr->register_hook('COMMON_PAGETPL_LOAD', 'BEFORE', $this, 'pagefromtemplate', array());
+	$contr->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'check_acl', array());
+	$contr->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, 'write_msg', array());
+    
+	
 
   }
 
@@ -57,12 +62,15 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
   function pagefromtemplate(&$event, $param) {  
     if($this->done) return;
     $this->done=true;
-
+    
     if(strlen(trim($_REQUEST['newpagetemplate']))>0) {
+	if(!$this->allow) {	 
+	   return ;
+	}
       global $conf;
       global $INFO;
       global $ID;
- 
+	
       $tpl = io_readFile(wikiFN($_REQUEST['newpagetemplate']));
  
       if($this->getConf('userreplace')) {
@@ -119,4 +127,20 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
     }
   }
 
+  function check_acl(&$event,$param) {
+    if(strlen(trim($_REQUEST['newpagetemplate']))>0) {
+       $pg = trim($_REQUEST['newpagetemplate'],':');
+       $auth =auth_quickaclcheck($pg);	
+	   if($auth < 4)   $this->allow = false;
+	   }
+   }
+   
+  function write_msg (&$event,$param) {
+    if($this->allow) return; 
+	global $ID;
+    echo"<h1> Permission Denied </h1>";
+	echo "You do not have access to the template  " . $_REQUEST['newpagetemplate'] . '</br>';	 
+	 unlock($ID); 
+	 $event->preventDefault(); 
+  }
 }
