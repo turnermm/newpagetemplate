@@ -8,7 +8,8 @@
  * and  Niko Paltzer (15 Jan 2010).
  *
  *  brought up-to-date with current Dokuwiki Event changes
- *  and event handling by Myron Turner (April 7 2011)
+ *  and event handling by Myron Turner (April 7 2011);
+ *  new security features (September 2 2011)
  *  turnermm02@shaw.ca     
  */
  
@@ -26,7 +27,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
    */
   function getInfo(){
     return array(
-      'author' => 'Jason Grout',
+      'author' => 'Jason Grout, Myron Turner',
       'email'  => 'jason-doku@creativetrax.com',
       'date'   => '2007-02-24',
       'name'   => 'newpagetemplate',
@@ -75,18 +76,18 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
  
       if($this->getConf('userreplace')) {
         $stringvars =
-          array_map(create_function('$v', 'return explode(",",$v,2);'),
-                    explode(';',$_REQUEST['newpagevars']));
+             array_map(create_function('$v', 'return explode(",",$v,2);'),
+                 explode(';',$_REQUEST['newpagevars']));
         foreach($stringvars as $value) {
-          $tpl = str_replace(trim($value[0]),trim($value[1]),$tpl);
-	}
-      }
+             $tpl = str_replace(trim($value[0]),hsc(trim($value[1])),$tpl);
+	    }
+     }
  
       if($this->getConf('standardreplace')) {
         // replace placeholders
-        $file = noNS($ID);
-        $page = strtr($file,'_',' ');
- 
+        $file = noNS($ID);       
+        $page = cleanID($file) ;
+		//$page = $file;
         $tpl = str_replace(array(
                               '@ID@',
                               '@NS@',
