@@ -3,6 +3,6 @@ author Jason Grout, modified: Myron Turner
 email turnermm02@shaw.ca
 date  2011-04-07
 name  newpagetemplate Plugin
-desc
+desc  load namespace-style template into new file from URL
 url http://www.dokuwiki.org/plugin:newpagetemplate
 

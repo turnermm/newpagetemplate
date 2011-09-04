@@ -48,9 +48,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
     $contr->register_hook('COMMON_PAGETPL_LOAD', 'BEFORE', $this, 'pagefromtemplate', array());
 	$contr->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'check_acl', array());
 	$contr->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, 'write_msg', array());
-    
-	
-
+	$contr->register_hook('HTML_PAGE_FROMTEMPLATE', 'BEFORE', $this, 'pagefromtemplate', array());
   }
 
   /**
@@ -87,7 +85,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
         // replace placeholders
         $file = noNS($ID);       
         $page = cleanID($file) ;
-		//$page = $file;
+	
         $tpl = str_replace(array(
                               '@ID@',
                               '@NS@',
@@ -102,6 +100,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
                               '@NAME@',
                               '@MAIL@',
                               '@DATE@',
+							  '@EVENT@'
                            ),
                            array(
                               $ID,
@@ -117,13 +116,18 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
                               $INFO['userinfo']['name'],
                               $INFO['userinfo']['mail'],
                               $conf['dformat'],
+							  $event->name ,
                            ), $tpl);
  
         // we need the callback to work around strftime's char limit
         $tpl = preg_replace_callback('/%./',create_function('$m','return strftime($m[0]);'),$tpl);
       }
-      $event->data['tpl'] = $tpl;
-
+	  if($event->name == 'HTML_PAGE_FROMTEMPLATE') {
+	     $event->result=$tpl;
+	  }
+	  else { 
+         $event->data['tpl'] = $tpl;
+      }
       $event->preventDefault(); 
     }
   }
