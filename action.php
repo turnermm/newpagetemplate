@@ -100,7 +100,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
                               '@NAME@',
                               '@MAIL@',
                               '@DATE@',
-							  '@EVENT@'
+                              '@EVENT@'
                            ),
                            array(
                               $ID,
@@ -116,7 +116,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
                               $INFO['userinfo']['name'],
                               $INFO['userinfo']['mail'],
                               $conf['dformat'],
-							  $event->name ,
+                              $event->name ,
                            ), $tpl);
  
         // we need the callback to work around strftime's char limit
