@@ -85,7 +85,12 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
         // replace placeholders
         $file = noNS($ID);       
         $page = cleanID($file) ;
-	
+        if($this->getConf('prettytitles')) {        
+            $title= str_replace('_',' ',$page);
+        }
+       else {
+           $title = $page;
+       }
         $tpl = str_replace(array(
                               '@ID@',
                               '@NS@',
@@ -109,9 +114,9 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
                               utf8_ucfirst($file),
                               utf8_strtoupper($file),
                               $page,
-                              utf8_ucfirst($page),
-                              utf8_ucwords($page),
-                              utf8_strtoupper($page),
+                              utf8_ucfirst($title),
+                              utf8_ucwords($title),
+                              utf8_strtoupper($title),                              
                               $_SERVER['REMOTE_USER'],
                               $INFO['userinfo']['name'],
                               $INFO['userinfo']['mail'],
