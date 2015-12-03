@@ -149,8 +149,8 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
     if($this->allow) return; 
 	global $ID;
     echo"<h1> Permission Denied </h1>";
-	echo "You do not have access to the template  " . $_REQUEST['newpagetemplate'] . '</br>';	 
-	 unlock($ID); 
-	 $event->preventDefault(); 
+    echo "You do not have access to the template  " . htmlentities($_REQUEST['newpagetemplate']) . '</br>';	 
+	unlock($ID); 
+	$event->preventDefault(); 
   }
 }
