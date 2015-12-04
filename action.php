@@ -18,6 +18,7 @@ if(!defined('DOKU_INC')) die();
  
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'action.php');
+require_once(DOKU_INC.'inc/init.php');
  
 class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
    var $done = false;
@@ -147,9 +148,10 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
    
   function write_msg (&$event,$param) {
     if($this->allow) return; 
-	global $ID;
+    global $ID,$INPUT;
+    
     echo"<h1> Permission Denied </h1>";
-    echo "You do not have access to the template  " . htmlentities($_REQUEST['newpagetemplate']) . '</br>';	 
+    echo "You do not have access to the template  " . htmlentities($INPUT->str('newpagetemplate')) . '</br>';	 
 	unlock($ID); 
 	$event->preventDefault(); 
   }
