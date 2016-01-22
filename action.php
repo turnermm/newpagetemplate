@@ -43,7 +43,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
    *  @author Myron Turner
    *  turnermm02@shaw.ca     
    */
-  function register(&$contr){
+  function register(Doku_Event_Handler $contr){
 
     $contr->register_hook('COMMON_PAGE_FROMTEMPLATE', 'BEFORE', $this, 'pagefromtemplate', array());
     $contr->register_hook('COMMON_PAGETPL_LOAD', 'BEFORE', $this, 'pagefromtemplate', array());
