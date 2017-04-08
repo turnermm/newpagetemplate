@@ -128,6 +128,9 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
         // we need the callback to work around strftime's char limit
         $tpl = preg_replace_callback('/%./',create_function('$m','return strftime($m[0]);'),$tpl);
       }
+      if($this->getConf('skip_unset_macros')) {
+          $tpl = preg_replace("/@.*?@/ms","",$tpl);
+      }
 	  if($event->name == 'HTML_PAGE_FROMTEMPLATE') {
 	     $event->result=$tpl;
 	  }
