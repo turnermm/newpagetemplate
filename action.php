@@ -59,7 +59,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
    *  turnermm02@shaw.ca     
    */
  
-  function pagefromtemplate(&$event, $param) {  
+  function pagefromtemplate(Doku_Event $event, $param) {  
     if($this->done) return;
     $this->done=true;
     
@@ -141,7 +141,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
     }
   }
 
-  function check_acl(&$event,$param) {
+  function check_acl(Doku_Event $event,$param) {
     if(strlen(trim($_REQUEST['newpagetemplate']))>0) {
        $pg = trim($_REQUEST['newpagetemplate'],':');
        $auth =auth_quickaclcheck($pg);	
