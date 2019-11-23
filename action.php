@@ -19,7 +19,8 @@ if(!defined('DOKU_INC')) die();
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'action.php');
 require_once(DOKU_INC.'inc/init.php');
- 
+require_once(DOKU_INC.'inc/Utf8/PhpString.php');
+use dokuwiki\Utf8\PhpString;
 class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
    var $done = false;
    var $allow = true;
@@ -112,12 +113,12 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
                               $ID,
                               getNS($ID),
                               $file,
-                              utf8_ucfirst($file),
-                              utf8_strtoupper($file),
+                              dokuwiki\Utf8\PhpString::ucfirst($file),
+                              dokuwiki\Utf8\PhpString::strtoupper($file),
                               $page,
-                              utf8_ucfirst($title),
-                              utf8_ucwords($title),
-                              utf8_strtoupper($title),                              
+                              dokuwiki\Utf8\PhpString::ucfirst($title),
+                              dokuwiki\Utf8\PhpString::ucwords($title),
+                              dokuwiki\Utf8\PhpString::strtoupper($title),                              
                               $_SERVER['REMOTE_USER'],
                               $INFO['userinfo']['name'],
                               $INFO['userinfo']['mail'],
