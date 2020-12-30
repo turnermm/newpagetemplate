@@ -75,8 +75,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
  
       if($this->getConf('userreplace')) {
         $stringvars =
-             array_map(create_function('$v', 'return explode(",",$v,2);'),
-                 explode(';',$_REQUEST['newpagevars']));
+            array_map(function($v) { return explode(",",$v,2);}, explode(';',$_REQUEST['newpagevars'])); 
         foreach($stringvars as $value) {
              $tpl = str_replace(trim($value[0]),hsc(trim($value[1])),$tpl);
 	    }
