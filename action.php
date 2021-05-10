@@ -75,8 +75,7 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
  
       if($this->getConf('userreplace')) {
         $stringvars =
-             array_map(create_function('$v', 'return explode(",",$v,2);'),
-                 explode(';',$_REQUEST['newpagevars']));
+            array_map(function($v) { return explode(",",$v,2);}, explode(';',$_REQUEST['newpagevars'])); 
         foreach($stringvars as $value) {
              $tpl = str_replace(trim($value[0]),hsc(trim($value[1])),$tpl);
 	    }
@@ -92,9 +91,26 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
        else {
            $title = $page;
        }
+         if(class_exists('\dokuwiki\\Utf8\PhpString')) {
+            $ucfirst = '\dokuwiki\Utf8\PhpString::ucfirst';
+            $ucwords = '\dokuwiki\\Utf8\PhpString::ucwords';
+            $ucupper = '\dokuwiki\\Utf8\PhpString::strtoupper';
+          
+        }
+       else {
+            $ucfirst = 'utf8_ucfirst';
+            $ucwords = 'utf8_ucwords';
+            $ucupper = 'utf8_strtoupper';
+           
+        }    
+        
         $tpl = str_replace(array(
                               '@ID@',
                               '@NS@',
+                              '@CURNS@',
+                              '@!CURNS@',
+                              '@!!CURNS@',
+                              '@!CURNS!@',
                               '@FILE@',
                               '@!FILE@',
                               '@!FILE!@',
@@ -111,13 +127,17 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
                            array(
                               $ID,
                               getNS($ID),
+                              curNS($ID),
+                              $ucfirst(curNS($ID)),
+                              $ucwords(curNS($ID)),
+                              $ucupper(curNS($ID)),
                               $file,
-                              utf8_ucfirst($file),
-                              utf8_strtoupper($file),
+                              $ucfirst($file),
+                              $ucupper($file),
                               $page,
-                              utf8_ucfirst($title),
-                              utf8_ucwords($title),
-                              utf8_strtoupper($title),                              
+                              $ucfirst($title),
+                              $ucwords($title),
+                              $ucupper($title),
                               $_SERVER['REMOTE_USER'],
                               $INFO['userinfo']['name'],
                               $INFO['userinfo']['mail'],
