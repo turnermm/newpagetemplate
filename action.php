@@ -168,7 +168,12 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
       }
 
       $pq = trim($INPUT->str('newpagetemplate'), ':');
-      if (auth_quickaclcheck($pq) < AUTH_CREATE) {
+	  $acl = $this->getConf('tmplate_acl');
+	  if($acl == 'AUTH_CREATE') {
+		$acl = 4;
+	  }
+	  else $acl = 1;   	  
+      if (auth_quickaclcheck($pq) < $acl) {
           $this->allow = false;
       }
    }

@@ -4,4 +4,5 @@ $conf['standardreplace']=1;
 $conf['userreplace']=1;
 $conf['prettytitles']=0;
 $conf['skip_unset_macros']=0;
+$conf['tmplate_acl'] = 'AUTH_CREATE';
 
