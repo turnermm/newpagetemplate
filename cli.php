@@ -25,8 +25,8 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
     protected function main(Options $options) {
         print_r($options->getArgs(),1); 
         //print_r($options->readPHPArgv());
-        global $argv;
-        print_r($argv);
+      //  global $argv;
+       // print_r($argv);
         if($options->getOpt('page')) {          
             $opts = $options->getArgs();          
             $clopts = $this->get_commandLineOptions($opts);               
@@ -52,9 +52,9 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
     function get_commandLineOptions($opts,$config = false) {
         if(function_exists('is_countable') &&!is_countable($opts)) return;
       echo "opts = " .print_r($opts,1) . "\n";
-        $page=""; $usrrepl="";$user = "";$cfg = false;
+        $page=""; $usrrepl="";$user = "";$ini = false;
         if($config) {
-           $cfg = array_shift($opts);          
+           $ini = array_shift($opts);          
         }
         else $page = array_shift($opts);
         for($i=0; $i<count($opts); $i++) {
@@ -85,7 +85,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
             }
         }
                    
-          return array('page'=>$page, 'usrrepl'=>$usrrepl,'tmpl'=>$tmpl, 'user'=>$user, 'cfg'=>$cfg);
+          return array('page'=>$page, 'usrrepl'=>$usrrepl,'tmpl'=>$tmpl, 'user'=>$user, 'ini'=>$ini);
         }      
 }
     
