@@ -9,16 +9,16 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
         $config =  $this->colors->wrap('config','cyan') ;
 
         $options->setHelp('This plugin helps to automate the processing of pages that use new page templates. ' .
-            'The first command line option must be either page or config.  For a complete description see ' .
+            'The first command line option must be either page or ini.  For a complete description see ' .
             'the newpagetemplate documentation at https://www.dokuwiki.org/plugin:newpagetemplate');
         $options->registerOption('version', 'print version', 'v');
         $options->registerOption('page', 'Apply the template to the named page', 'p');  
         $options->registerOption('usrrepl', 'Macro/Replacent string: @MACRO@,replacement;@MACRO_2@. . . ', 'u');           
         $options->registerOption('tmpl', 'Template to apply to the specified page ', 't');   
         $options->registerOption('owner', 'User/owner of current process', 'o');
-        $options->registerOption('config', "Use the $config file set in the Configuration Manager. The format of " .
-            'this file is described on the newpagetemplate plugin page. The config option is essentially a boolean' .
-            ' and does not take a parameter.', 'c');        
+        $options->registerOption('ini', "Use ini file. This file must be stored in  the root directory" .
+        " of the newpagetemplate plugin. Its format is described on the newpagetemplate" .
+        " plugin page. To use the ini file specified in the plugin's Configuration Settings, this must be $config.", 'i');        
         
     }
     
@@ -33,7 +33,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
             $helper = plugin_load('helper','newpagetemplate',1,$false);            
             $helper->init($clopts,$options);
         } 
-        else if ($options->getOpt('config')) {
+        else if ($options->getOpt('ini')) {
             $opts = $options->getArgs();           
             $clopts = $this->get_commandLineOptions($opts,1);
             $helper = plugin_load('helper','newpagetemplate',1,$false);
