@@ -4,6 +4,7 @@ use splitbrain\phpcli\Options;
  
 class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
     // register options and arguments
+    private $newpgdbg = false;
     protected function setup(Options $options) {
        // $this->colors->disable();
         $config =  $this->colors->wrap('config','cyan') ;
@@ -16,30 +17,35 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
         $options->registerOption('usrrepl', 'Macro/Replacent string: @MACRO@,replacement;@MACRO_2@. . . ', 'u');           
         $options->registerOption('tmpl', 'Template to apply to the specified page ', 't');   
         $options->registerOption('owner', 'User/owner of current process', 'o');
-        $options->registerOption('ini', "Use ini file. This file must be stored in  the root directory" .
+        $options->registerOption('ini', "Name of alternate ini file. This file must be stored in the root directory" .
         " of the newpagetemplate plugin. Its format is described on the newpagetemplate" .
-        " plugin page. To use the ini file specified in the plugin's Configuration Settings, this must be $config.", 'i');        
+        " plugin page. To use the ini file specified in the plugin's Configuration Settings, this option must be set to $config.", 'i');        
         
     }
     
     protected function main(Options $options) {
         print_r($options->getArgs(),1); 
-        //print_r($options->readPHPArgv());
-      //  global $argv;
-       // print_r($argv);
+
         if($options->getOpt('page')) {          
             $opts = $options->getArgs();          
             $clopts = $this->get_commandLineOptions($opts);               
+            if(!$clopts['page']) {
+                $this->commandLineErr('page');
+            }
+            $this->raw_commanLineOpts($opts,$clopts); 
             $helper = plugin_load('helper','newpagetemplate',1,$false);            
             $helper->init($clopts,$options);
         } 
         else if ($options->getOpt('ini')) {
             $opts = $options->getArgs();           
             $clopts = $this->get_commandLineOptions($opts,1);
+            if(!$clopts['ini']) {
+                $this->commandLineErr('ini');
+            }        
+            $this->raw_commanLineOpts($opts,$clopts);                  
             $helper = plugin_load('helper','newpagetemplate',1,$false);
             $helper->init($clopts,$options);
         }
-      
         else if ($options->getOpt('version')) {
             $info = $this->getInfo();    
             $this->success($info['date']);
@@ -51,7 +57,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
     
     function get_commandLineOptions($opts,$config = false) {
         if(function_exists('is_countable') &&!is_countable($opts)) return;
-      echo "opts = " .print_r($opts,1) . "\n";
+       // echo "opts = " .print_r($opts,1) . "\n";
         $page=""; $usrrepl="";$user = "";$ini = false;
         if($config) {
            $ini = array_shift($opts);          
@@ -87,7 +93,44 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
                    
           return array('page'=>$page, 'usrrepl'=>$usrrepl,'tmpl'=>$tmpl, 'user'=>$user, 'ini'=>$ini);
         }      
-}
+
+    function raw_commanLineOpts($opts,$clopts = "") {   
+      if(!$this->newpgdbg) return;    
+      global $argv;
+        echo "argv = " .  print_r($argv,1);
+        print_r($opts);
+        print_r($clopts);       
+    }
     
-
-
+    function commandLineErr($type) {
+        switch($type) {
+           case 'page':
+               $this->colors->ptln("$type error: page id required",'cyan');
+               exit;              
+           case 'ini':
+               $this->colors->ptln("$type error: ini configuration file required",'cyan');
+               exit; 
+            default:   
+         }
+       return 1;
+    }       
+/**
+ * @param array      $array
+ * @param int|string $position
+ * @param mixed      $insert
+ */
+    function array_insert(&$array, $position, $insert)
+    {
+        if (is_int($position)) {
+            array_splice($array, $position, 0, $insert);
+        } else {
+            $pos   = array_search($position, array_keys($array));
+            $array = array_merge(
+                array_slice($array, 0, $pos),
+                $insert,
+                array_slice($array, $pos)
+            );
+        }
+    }        
+              
+}
