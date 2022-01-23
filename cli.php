@@ -4,7 +4,7 @@ use splitbrain\phpcli\Options;
  
 class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
     // register options and arguments
-    private $newpgdbg = false;
+    public $newpgdbg = false;
     protected function setup(Options $options) {
        // $this->colors->disable();
         $config =  $this->colors->wrap('config','cyan') ;
@@ -13,7 +13,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
             'The first command line option must be either page or ini.  For a complete description see ' .
             'the newpagetemplate documentation at https://www.dokuwiki.org/plugin:newpagetemplate');
         $options->registerOption('version', 'print version', 'v');
-        $options->registerOption('page', 'Apply the template to the named page', 'p');  
+        $options->registerOption('page', 'Apply the template to the named page id', 'p');  
         $options->registerOption('usrrepl', 'Macro/Replacent string: @MACRO@,replacement;@MACRO_2@. . . ', 'u');           
         $options->registerOption('tmpl', 'Template to apply to the specified page ', 't');   
         $options->registerOption('owner', 'User/owner of current process', 'o');
@@ -27,14 +27,14 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
         print_r($options->getArgs(),1); 
 
         if($options->getOpt('page')) {          
-            $opts = $options->getArgs();          
-            $clopts = $this->get_commandLineOptions($opts);               
+            $opts = $options->getArgs();         
+            $clopts = $this->get_commandLineOptions($opts);       
             if(!$clopts['page']) {
                 $this->commandLineErr('page');
             }
-            $this->raw_commanLineOpts($opts,$clopts); 
+            $this->raw_commandLineOpts($opts,$clopts); 
             $helper = plugin_load('helper','newpagetemplate',1,$false);            
-            $helper->init($clopts,$options);
+            $helper->init($clopts,$options,$this);
         } 
         else if ($options->getOpt('ini')) {
             $opts = $options->getArgs();           
@@ -42,9 +42,9 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
             if(!$clopts['ini']) {
                 $this->commandLineErr('ini');
             }        
-            $this->raw_commanLineOpts($opts,$clopts);                  
+            $this->raw_commandLineOpts($opts,$clopts);                  
             $helper = plugin_load('helper','newpagetemplate',1,$false);
-            $helper->init($clopts,$options);
+            $helper->init($clopts,$options,$this);
         }
         else if ($options->getOpt('version')) {
             $info = $this->getInfo();    
@@ -57,7 +57,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
     
     function get_commandLineOptions($opts,$config = false) {
         if(function_exists('is_countable') &&!is_countable($opts)) return;
-       // echo "opts = " .print_r($opts,1) . "\n";
+      
         $page=""; $usrrepl="";$user = "";$ini = false;
         if($config) {
            $ini = array_shift($opts);          
@@ -94,8 +94,8 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin {
           return array('page'=>$page, 'usrrepl'=>$usrrepl,'tmpl'=>$tmpl, 'user'=>$user, 'ini'=>$ini);
         }      
 
-    function raw_commanLineOpts($opts,$clopts = "") {   
-      if(!$this->newpgdbg) return;    
+    public function raw_commandLineOpts($opts="",$clopts="", $dbg=false) { 
+        if(!$this->newpgdbg && !$dbg) return;    
       global $argv;
         echo "argv = " .  print_r($argv,1);
         print_r($opts);

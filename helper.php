@@ -3,15 +3,22 @@ if(!defined('DOKU_INC')) die();
 
 class helper_plugin_newpagetemplate extends DokuWiki_Plugin {
     public $template;
-    function init($opts,$options) {      
-      //  echo print_r($opts,1) . "\n"; return; 
+    private $debug = false;
+    function init($opts,$options,$cli) {  
         $page=$opts['page'];
         $usrreplace=$opts['usrrepl'];
         $template=$opts['tmpl'];
         $overwrite=$opts['overwr'];
         $ini=$opts['ini'];
         $user = $opts['user'];
-      //  echo "$user // ini $ini" . "\n"; exit;
+        $ini = $opts['ini']; 
+        
+        if($this->debug) {
+            $cli_opts = $options->getArgs();       
+            $cli->raw_commandLineOpts($cli_opts,$opts,1);
+            return;
+        }
+
         if(!empty($template)) {
             $template = wikiFN($template);
             echo "Template: $template \n";
@@ -20,7 +27,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin {
             echo $tpl . "\n";        
         }   
         else if(isset($opts['ini'])) {
-             $this->output_ini($user);
+             $this->output_ini($user,$ini);
         }
        //$this->writePage($page,$tpl);
     
@@ -119,19 +126,27 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin {
           return $tpl;
       }
 
-    function output_ini($opts) {
-        $ini_file = DOKU_INC .'lib/plugins/newpagetemplate/newpage.ini';
+    function output_ini($opts,$ini) {
+        if($ini == 'config') {
+            $ini_file = $this->getConf('default_ini');
+            $ini_file = DOKU_INC ."lib/plugins/newpagetemplate/$ini_file";
+           // echo "$ini_file\n"; return;
+        }
+        else {
+            $ini_file = DOKU_INC ."lib/plugins/newpagetemplate/$ini";
+        }
+       // echo "Ini File: $ini_file\n"; 
         $ini = parse_ini_file($ini_file,1);
         $templ = array_keys($ini);
         foreach($templ AS $t) {           
             $pages = $ini[$t]['page'];
             $newpagevars = $ini[$t]['newpagevars'];
             if(is_array($newpagevars)) {
-                echo "$t\n";
+                echo "\n$t\n\n";
                 $this->process_array($pages,$newpagevars, $t,$user);
             }
             else { 
-                echo "$t\n";
+                echo "\n$t\n\n";
                 $this->process_single($pages,$newpagevars, $t,$user);
             }
         }
@@ -139,7 +154,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin {
     function process_array($pages,$newpagevars, $tpl,$user) {       
           for($i = 0; $i < count($pages); $i++) {
               $res = $this->pagefromtemplate($tpl,$pages[$i],$newpagevars[$i],$user); 
-              echo "TEMPLATE: ". $res . "\n";
+              echo "Output: ". "\n" . $res . "\n";
               echo "\n===================\n";
           }  
 
@@ -148,7 +163,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin {
     function process_single($pages,$newpagevars, $tpl,$user) {  
           for($i = 0; $i < count($pages); $i++) {
               $res = $this->pagefromtemplate($tpl,$pages[$i],$newpagevars,$user); 
-              echo "TEMPLATE: ". $res . "\n";
+              echo "Output: ". "\n" .$res . "\n";
               echo "\n===================\n";
           }
       }
