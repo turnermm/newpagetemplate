@@ -27,21 +27,22 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                 $this->output = 'goodbye';
                 break;
         }
-    }
-
+        
+        $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ;
+    } 
     /**
      * output appropriate html
      */
     function html()
     {
-        ptln('<p>' . htmlspecialchars($this->getLang($this->output)) . '</p>');
+        ptln('<p>' . preg_replace("/\n/","<br />", $this->output)) . '</p>';
         ptln('<form action="' . wl($ID) . '" method="post">');
 
         // output hidden values to ensure dokuwiki will return back to this plugin
         ptln('  <input type="hidden" name="do"   value="admin" />');
         ptln('  <input type="hidden" name="page" value="' . $this->getPluginName() . '" />');
         formSecurityToken();
-        ptln('<select name="slect-ini">');
+        ptln('Select ini file<select name="slect-ini">');
         $ini_files = $this->ini_files();
         ptln($ini_files);
         ptln('</select>');
@@ -54,7 +55,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
     {
         $lib = DOKU_INC . 'lib/plugins/newpagetemplate/';
         $files = scandir($lib);
-        $opt_str = "<option 'none'>select ini</option>";
+        $opt_str = "<option 'none'>none</option>";
         foreach ($files as $file) {
             if (preg_match("/\.ini$/", $file)) {
                 $opt_str .= "<option value = '$file'>$file</option>";
