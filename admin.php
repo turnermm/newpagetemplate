@@ -48,9 +48,10 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         ptln($this->getLang('select-ini') .': <select name="ini_file">');
         $ini_files = $this->ini_files();
         ptln($ini_files);
-        ptln('</select>');
-        ptln(  $this->getLang('templ') .' <input type="textbox" name="template"/>');
-        ptln(  $this->getLang('page') .' <input type="textbox" name=""/>');
+        ptln('</select>&nbsp;&nbsp;');
+        ptln($this->getLang('templ') .':&nbsp;<input type="textbox" name="template"/>&nbsp;&nbsp;');
+        ptln($this->getLang('page') .':&nbsp;<input type="textbox" name="id"/>&nbsp;&nbsp;');
+        ptln($this->getLang('userrelpl') . ':&nbsp;<input type="textbox" name="userrelpl"/>');        
         
         ptln('<div style="line-height:2"><input type="submit" name="cmd[submit]"  value="' . $this->getLang('btn_submit') . '" />');
         ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>');
