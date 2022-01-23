@@ -4,7 +4,7 @@ define("NEWPAGETPL_CMDL", 'php ' . DOKU_INC . 'bin/plugin.php newpagetemplate ')
 class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
 {
 
-    var $output = 'world';
+    var $output = '';
 
     /**
      * handle user request
@@ -20,15 +20,17 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         echo '<pre>' . print_r($_REQUEST, 1) . '</pre>';
         // verify valid values
         switch (key($_REQUEST['cmd'])) {
-            case 'hello' :
-                $this->output = 'again';
+            case 'ini' :
+                $this->output = 'ini';
                 break;
-            case 'goodbye' :
-                $this->output = 'goodbye';
-                break;
+            case 'page' :
+                $this->output = 'page';
+                break;                
+             case 'help':              
+                $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ; 
+                break;                
         }
-        
-        $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ;
+
     } 
     /**
      * output appropriate html
@@ -42,12 +44,16 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         ptln('  <input type="hidden" name="do"   value="admin" />');
         ptln('  <input type="hidden" name="page" value="' . $this->getPluginName() . '" />');
         formSecurityToken();
-        ptln('Select ini file<select name="slect-ini">');
+        
+        ptln($this->getLang('select-ini') .': <select name="ini_file">');
         $ini_files = $this->ini_files();
         ptln($ini_files);
         ptln('</select>');
-        ptln('  <input type="submit" name="cmd[hello]"  value="' . $this->getLang('btn_hello') . '" />');
-        ptln('  <input type="submit" name="cmd[goodbye]"  value="' . $this->getLang('btn_goodbye') . '" />');
+        ptln(  $this->getLang('templ') .' <input type="textbox" name="template"/>');
+        ptln(  $this->getLang('page') .' <input type="textbox" name=""/>');
+        
+        ptln('<div style="line-height:2"><input type="submit" name="cmd[submit]"  value="' . $this->getLang('btn_submit') . '" />');
+        ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>');
         ptln('</form>');
     }
 
@@ -55,7 +61,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
     {
         $lib = DOKU_INC . 'lib/plugins/newpagetemplate/';
         $files = scandir($lib);
-        $opt_str = "<option 'none'>none</option>";
+        $opt_str = "<option 'none'>".$this->getLang('no_selection')."</option>";
         foreach ($files as $file) {
             if (preg_match("/\.ini$/", $file)) {
                 $opt_str .= "<option value = '$file'>$file</option>";
