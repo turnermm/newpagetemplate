@@ -22,7 +22,9 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         global $INPUT;
         $ini = $INPUT->str('ini_file','none');
         $tpl = $INPUT->str('tpl_file','none');
+        $userepl = $INPUT->str('userrelpl','none');
         $tplns = $this->getConf('default_tplns');
+      
         switch (key($_REQUEST['cmd'])) { 
             case 'submit' :            
                 $this->output = 'submit';             
@@ -31,7 +33,10 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                         $this->output = "The -p (--page) option requires a template";
                         return;
                     }                        
-                    $cmdL = '-p ' .$_REQUEST['id'] .  " -t $tplns:$tpl";                   
+                    $cmdL = '-p ' .$_REQUEST['id'] .  " -t $tplns:$tpl";
+                    if($userepl != 'none') {
+                        $cmdL .= " -u \"$userepl\" ";
+                    }
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                 }
                 break;                
