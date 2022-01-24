@@ -28,11 +28,10 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                 $this->output = 'submit';             
                 if(!empty($_REQUEST['id'])) {
                     if($tpl == 'none') {
-                        $this->output = "The -p (--page) option requires a page id";
+                        $this->output = "The -p (--page) option requires a template";
                         return;
                     }                        
-                    $cmdL = '-p ' .$_REQUEST['id'] .  " -t $tplns:$tpl";     
-                    //$this->output       =     NEWPAGETPL_CMDL  . $cmdL;                  
+                    $cmdL = '-p ' .$_REQUEST['id'] .  " -t $tplns:$tpl";                   
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                 }
                 break;                
