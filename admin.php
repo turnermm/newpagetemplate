@@ -47,11 +47,18 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         ptln('  <input type="hidden" name="page" value="' . $this->getPluginName() . '" />');
         formSecurityToken();
         
+        /*Select ini files */
         ptln($this->getLang('select-ini') .': <select name="ini_file">');
         $ini_files = $this->ini_files();
         ptln($ini_files);
-        ptln('</select>&nbsp;&nbsp;');
-        ptln($this->getLang('templ') .':&nbsp;<input type="textbox" name="template"/>&nbsp;&nbsp;');
+        ptln('</select>&nbsp;&nbsp;');        
+
+        /* Select Template */
+        ptln($this->getLang('templ') .': <select name="tpl_file">');
+        $tpls = $this->templates();
+        ptln($tpls);
+        ptln('</select>&nbsp;&nbsp;'); 
+        
         ptln($this->getLang('page') .':&nbsp;<input type="textbox" name="id"/>&nbsp;&nbsp;');
         ptln($this->getLang('userrelpl') . ':&nbsp;<input type="textbox" name="userrelpl"/>');        
         
@@ -74,4 +81,17 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         }
         return ($opt_str);
     }
+    function templates() {
+        $pages = DOKU_INC . 'data/pages/pagetemplates/';
+        $files = scandir($pages);
+        $opt_str = "<option 'none'>".$this->getLang('no_selection')."</option>";
+        foreach ($files as $file) {
+            if (preg_match("/\.txt$/", $file)) {
+                list($id,$ext) = explode('.',$file);
+                $opt_str .= "<option value = '$id'>$id</option>";
+            }
+        }
+        return ($opt_str);        
+    }
+    
 }
