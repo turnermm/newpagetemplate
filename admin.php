@@ -28,6 +28,8 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                 break;                
              case 'help':              
                 $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ; 
+                $this->output = preg_replace("/\n\n/","<br />", htmlentities($this->output));                 
+                $this->output = preg_replace("/(-\w\,\s+--\w+)/","<span style='color:blue;'>$1</span>",$this->output);
                 break;                
         }
 
@@ -37,7 +39,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
      */
     function html()
     {
-        ptln('<p>' . preg_replace("/\n/","<br />", $this->output)) . '</p>';
+        
         ptln('<form action="' . wl($ID) . '" method="post">');
 
         // output hidden values to ensure dokuwiki will return back to this plugin
@@ -56,6 +58,8 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         ptln('<div style="line-height:2"><input type="submit" name="cmd[submit]"  value="' . $this->getLang('btn_submit') . '" />');
         ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>');
         ptln('</form>');
+         
+        ptln('<br /><div  style = "overflow: scroll;height:250px;">' . $this->output . '</div>');
     }
 
     function ini_files()

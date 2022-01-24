@@ -16,6 +16,5 @@ $lang['btn_help']  = 'Help';
 $lang['page']  = 'Page id';
 $lang['templ']  = 'Template';
 $lang['select-ini']   = 'Ini file';
-//$lang['invalid']      = 'invalid input detected!';
 $lang['no_selection'] = 'Select';
 $lang['userrelpl'] = 'User replacements';
