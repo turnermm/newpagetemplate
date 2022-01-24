@@ -19,12 +19,20 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         if (!is_array($_REQUEST['cmd'])) return;
         echo '<pre>' . print_r($_REQUEST, 1) . '</pre>';
         // verify valid values
+        global $INPUT;
+        $ini = $INPUT->str('ini_file','none');
+        $tpl = $INPUT->str('tpl_file','none');
+        $tplns = $this->getConf('default_tplns');
         switch (key($_REQUEST['cmd'])) { 
             case 'submit' :            
                 $this->output = 'submit';             
                 if(!empty($_REQUEST['id'])) {
-                    $cmdL = '-p ' .$_REQUEST['id'] .  ' -t :pagetemplates:home';
-                    //$this->output = NEWPAGETPL_CMDL . $cmdL;      
+                    if($tpl == 'none') {
+                        $this->output = "The -p (--page) option requires a page id";
+                        return;
+                    }                        
+                    $cmdL = '-p ' .$_REQUEST['id'] .  " -t $tplns:$tpl";     
+                    //$this->output       =     NEWPAGETPL_CMDL  . $cmdL;                  
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                 }
                 break;                
@@ -85,7 +93,8 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         return ($opt_str);
     }
     function templates() {
-        $pages = DOKU_INC . 'data/pages/pagetemplates/';
+        $tplns = $this->getConf('default_tplns');
+        $pages = DOKU_INC . 'data/pages/' . $tplns;
         $files = scandir($pages);
         $opt_str = "<option value='none'>".$this->getLang('no_selection')."</option>";
         foreach ($files as $file) {
