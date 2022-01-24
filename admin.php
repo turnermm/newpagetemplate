@@ -13,23 +13,26 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
     {
 
         if (!isset($_REQUEST['cmd'])) return;   // first time - nothing to do
-
-        $this->output = 'invalid';
+        
+        $this->output = '';
         if (!checkSecurityToken()) return;
         if (!is_array($_REQUEST['cmd'])) return;
         echo '<pre>' . print_r($_REQUEST, 1) . '</pre>';
         // verify valid values
-        switch (key($_REQUEST['cmd'])) {
-            case 'ini' :
-                $this->output = 'ini';
-                break;
-            case 'page' :
-                $this->output = 'page';
+        switch (key($_REQUEST['cmd'])) { 
+            case 'submit' :            
+                $this->output = 'submit';             
+                if(!empty($_REQUEST['id'])) {
+                    $cmdL = '-p ' .$_REQUEST['id'] .  ' -t :pagetemplates:home';
+                    //$this->output = NEWPAGETPL_CMDL . $cmdL;      
+                    $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
+                }
                 break;                
              case 'help':              
                 $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ; 
                 $this->output = preg_replace("/\n\n/","<br />", htmlentities($this->output));                 
-                $this->output = preg_replace("/(-\w\,\s+--\w+)/","<span style='color:blue;'>$1</span>",$this->output);
+                $this->output = preg_replace("/(-\w\,\s+--\w+)/","<span style='color:blue;'>$1</span>",$this->output);                 
+                $this->output = preg_replace("/&lt;macros&gt;]/","&lt;macros&gt;]<br />",$this->output);
                 break;                
         }
 
@@ -73,7 +76,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
     {
         $lib = DOKU_INC . 'lib/plugins/newpagetemplate/';
         $files = scandir($lib);
-        $opt_str = "<option 'none'>".$this->getLang('no_selection')."</option>";
+        $opt_str = "<option value = 'none'>".$this->getLang('no_selection')."</option>";
         foreach ($files as $file) {
             if (preg_match("/\.ini$/", $file)) {
                 $opt_str .= "<option value = '$file'>$file</option>";
@@ -84,7 +87,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
     function templates() {
         $pages = DOKU_INC . 'data/pages/pagetemplates/';
         $files = scandir($pages);
-        $opt_str = "<option 'none'>".$this->getLang('no_selection')."</option>";
+        $opt_str = "<option value='none'>".$this->getLang('no_selection')."</option>";
         foreach ($files as $file) {
             if (preg_match("/\.txt$/", $file)) {
                 list($id,$ext) = explode('.',$file);
