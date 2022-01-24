@@ -12,18 +12,22 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
     {
         // $this->colors->disable();
         $config = $this->colors->wrap('config', 'cyan');
-
-        $options->setHelp('This plugin helps to automate the processing of pages that use new page templates. ' .
-            'The first command line option must be either page or ini.  For a complete description see ' .
-            'the newpagetemplate documentation at https://www.dokuwiki.org/plugin:newpagetemplate');
+        $pg = $this->colors->wrap('config', 'cyan');
+        $ini = $this->colors->wrap('ini', 'cyan');
+        $options->setHelp(
+        "[[-p|--page] page_id] | [[-i|--ini] path-to-ini|config] | [[-t|--tpl] template_id] | [[-u|usrrepl] <macros>]" .                
+        "\n\nThis plugin helps to automate the processing of pages that use new page templates. " .
+            "The first command line option must be either '$pg' or '$ini'.  For a complete description see " .
+            " the newpagetemplate documentation at https://www.dokuwiki.org/plugin:newpagetemplate\n"  
+            );
         $options->registerOption('version', 'print version', 'v');
         $options->registerOption('page', 'Apply the template to the named page id', 'p');
         $options->registerOption('usrrepl', 'Macro/Replacent string: @MACRO@,replacement;@MACRO_2@. . . ', 'u');
         $options->registerOption('tmpl', 'Template to apply to the specified page ', 't');
         $options->registerOption('owner', 'User/owner of current process', 'o');
-        $options->registerOption('ini', "Name of alternate ini file. This file must be stored in the root directory" .
-            " of the newpagetemplate plugin. Its format is described on the newpagetemplate" .
-            " plugin page. To use the ini file specified in the plugin's Configuration Settings, this option must be set to $config.", 'i');
+        $options->registerOption('ini', "Name of an ini file. This file must be stored in the root directory" .
+            " of the newpagetemplate plugin. Its format and functioning are described on the newpagetemplate" .
+            " plugin page. To use the ini file specified in the plugin's Configuration Settings, this option must be set to '$config'.", 'i');
 
     }
 
