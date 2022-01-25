@@ -29,7 +29,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             //$this->writePage($opts['page'],$tpl);
             echo $tpl . "\n";
         } else if (isset($opts['ini'])) {
-            $this->output_ini($user, $ini);
+            $this->output_ini($user, $ini,$usrreplace);
         }
         //$this->writePage($page,$tpl);
 
@@ -130,7 +130,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         return $tpl;
     }
 
-    function output_ini($opts, $ini)
+    function output_ini($user="", $ini, $usrreplace)
     {
         if ($ini == 'config') {
             $ini_file = $this->getConf('default_ini');
@@ -147,17 +147,20 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             $newpagevars = $ini[$t]['newpagevars'];
             if (is_array($newpagevars)) {
                 echo "\n$t\n\n";
-                $this->process_array($pages, $newpagevars, $t, $user);
+                $this->process_array($pages, $newpagevars, $t, $user,$usrreplace);
             } else {
                 echo "\n$t\n\n";
-                $this->process_single($pages, $newpagevars, $t, $user);
+                $this->process_single($pages, $newpagevars, $t, $user,$usrreplace);
             }
         }
     }
 
-    function process_array($pages, $newpagevars, $tpl, $user)
+    function process_array($pages, $newpagevars, $tpl, $user="",$usrreplace)
     {
         for ($i = 0; $i < count($pages); $i++) {
+            if(!empty($usrreplace)) {
+                $newpagevars[$i] .= ";$usrreplace";
+            }
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars[$i], $user);
             echo "Output: " . "\n" . $res . "\n";
             echo "\n===================\n";
@@ -165,8 +168,11 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
 
     }
 
-    function process_single($pages, $newpagevars, $tpl, $user)
+    function process_single($pages, $newpagevars, $tpl, $user="",$usrreplace)
     {
+        if(!empty($usrreplace)) {
+        $newpagevars .= ";$usrreplace";
+        }
         for ($i = 0; $i < count($pages); $i++) {
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
             echo "Output: " . "\n" . $res . "\n";

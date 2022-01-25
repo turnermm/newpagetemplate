@@ -39,6 +39,15 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     }
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                 }
+                else if($ini != 'none') {                    
+                    $cmdL = " -i $ini";     
+                    if($userepl != 'none') {
+                        $cmdL .= " -u \"$userepl\" ";
+                        
+                    }                  
+                    $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
+                }
+                $this->output = preg_replace("/\n+/","<br />", htmlentities($this->output));
                 break;                
              case 'help':              
                 $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ; 
