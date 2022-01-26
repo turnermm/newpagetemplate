@@ -18,3 +18,6 @@ $lang['templ']  = 'Template';
 $lang['select-ini']   = 'Ini file';
 $lang['no_selection'] = 'Select';
 $lang['userrelpl'] = 'User replacements';
+$lang['close'] = 'Close';
+$lang['clear'] = 'Clear output';
+$lang['howto'] = "Instructions";

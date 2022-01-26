@@ -63,9 +63,12 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
      */
     function html()
     {
-        
-        ptln('<form action="' . wl($ID) . '" method="post">');
-
+    
+      ptln('<div id="nptpl_howto" style="display:none;border:1px black solid;padding:12px 12px 12px 8px;height:400px;overflow:auto;">' );      
+      ptln('<button  style = "float:right;" onclick="nptpl_toggle(\'#nptpl_howto\')">' . $this->getLang('close'). '</button>&nbsp;' . $this->locale_xhtml('howto'));
+      ptln('<button  style = "float:right" onclick="nptpl_toggle(\'#nptpl_howto\')">' . $this->getLang('close'). '</button>&nbsp;<br /><br /></div>');
+  
+       ptln('<form action="' . wl($ID) . '" method="post">');
         // output hidden values to ensure dokuwiki will return back to this plugin
         ptln('  <input type="hidden" name="do"   value="admin" />');
         ptln('  <input type="hidden" name="page" value="' . $this->getPluginName() . '" />');
@@ -89,8 +92,10 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         ptln('<div style="line-height:2"><input type="submit" name="cmd[submit]"  value="' . $this->getLang('btn_submit') . '" />');
         ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>');
         ptln('</form>');
-         
-        ptln('<br /><div  style = "overflow: scroll;height:250px;">' . $this->output . '</div>');
+        
+        ptln('<button onclick=" nptpl_toggle(\'#nptpl_howto\')">'. $this->getLang('howto') .'</button>&nbsp;'); 
+        ptln('<button onclick=" nptpl_clear(\'nptpl_output\')">'. $this->getLang('clear') .'</button>&nbsp;');        
+        ptln('<br /><div id="nptpl_output" style = "overflow: scroll;height:250px;">' . $this->output . '</div>');
     }
 
     function ini_files()

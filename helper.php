@@ -25,13 +25,12 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         if (!empty($template)) {
             $template = wikiFN($template);
             echo "Template: $template \n";
-            $tpl = $this->pagefromtemplate($opts['tmpl'], $opts['page'], $opts['usrrepl'], $opts['user']);
-            //$this->writePage($opts['page'],$tpl);
+            $tpl = $this->pagefromtemplate($opts['tmpl'], $opts['page'], $opts['usrrepl'], $opts['user']); 
             echo $tpl . "\n";
         } else if (isset($opts['ini'])) {
             $this->output_ini($user, $ini,$usrreplace);
         }
-        //$this->writePage($page,$tpl);
+        $this->writePage($page,$tpl);
 
 
     }
@@ -162,6 +161,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
                 $newpagevars[$i] .= ";$usrreplace";
             }
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars[$i], $user);
+            $this->writePage($pages[$i], $res);
             echo "Output: " . "\n" . $res . "\n";
             echo "\n===================\n";
         }
@@ -170,11 +170,13 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
 
     function process_single($pages, $newpagevars, $tpl, $user="",$usrreplace)
     {
+        /* handles mutiple pages but single instance of newpagevars */
         if(!empty($usrreplace)) {
-        $newpagevars .= ";$usrreplace";
+            $newpagevars .= ";$usrreplace";
         }
         for ($i = 0; $i < count($pages); $i++) {
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
+            $this->writePage($pages[$i], $res);            
             echo "Output: " . "\n" . $res . "\n";
             echo "\n===================\n";
         }

@@ -1,0 +1,7 @@
+===== Purpose =====
+ 
+With this app users can conveniently communicate with Dokuwiki's xmlrpc library. It can be on any Dokuwiki, including the one which you are currently logged into.  The user can then communicate and exchange data between the local wiki and a remote wiki.
+
+===== Basics =====
+
+At its simplest you enter the URL of the remote wiki into the ''Remote URL'' TEXT_BOXx.
