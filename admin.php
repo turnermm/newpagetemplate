@@ -39,14 +39,15 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                         $cmdL .= " -u \"$userepl\" ";
                     }
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
+                    $this->help = true; 
                 }
                 else if($ini != 'none') {                    
                     $cmdL = " -i $ini";     
                     if($userepl != 'none') {
-                        $cmdL .= " -u \"$userepl\" ";
-                        
+                        $cmdL .= " -u \"$userepl\" ";                        
                     }                  
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
+                    $this->help = true; 
                 }
                 $this->output = preg_replace("/\n+/","<br />", htmlentities($this->output));
                 break;                

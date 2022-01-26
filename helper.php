@@ -42,6 +42,10 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         chown($file, 'www-data');
         chgrp($file, 'www-data');
         chmod($file, 0664);
+        $ns = getNS($page);
+        $ns = preg_replace("/\.txt$/","",wikiFn($ns));     
+        chown($ns, 'www-data');
+        chgrp($ns, 'www-data');        
     }
 
     function pagefromtemplate($template, $page, $newpagevars, $user = "")
