@@ -12,7 +12,7 @@ $lang['menu'] = 'Newpagetemplate';
 
 //$lang['btn_hello']    = 'hello';
 $lang['btn_submit']  = 'Submit';
-$lang['btn_help']  = 'Help';
+$lang['btn_help']  = 'Command Line';
 $lang['page']  = 'Page id';
 $lang['templ']  = 'Template';
 $lang['select-ini']   = 'Ini file';
