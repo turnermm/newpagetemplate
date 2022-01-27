@@ -1,7 +1,9 @@
-===== Purpose =====
- 
-With this app users can conveniently communicate with Dokuwiki's xmlrpc library. It can be on any Dokuwiki, including the one which you are currently logged into.  The user can then communicate and exchange data between the local wiki and a remote wiki.
+This admin app is a GUI for the command line plugin that is described in the [[doku>plugin:newpagetemplate:cmdline|]] documentation. It has four options, corresponding to the main command line options.: ''Ini file'', ''Template'', ''Page id'', and ''User replacements''.  These options enable you to process a single page using the selected page and template or one or more pages using one or more templates using an initialization file.
 
-===== Basics =====
+If you choose both ''ini file'' and ''Page id'', ''Page id'' will take precedence. If you choose ''Page id'', you must choose a template.  The ''User replacements'' are the ''newpagevars'' that are explained in the [[doku>plugin:newpagetemplate#usage|newpagetemplate]] documentation. If you choose an initialization file, you can  use the ''User replacements'' option to add replacements to those in the initialization file.
 
-At its simplest you enter the URL of the remote wiki into the ''Remote URL'' TEXT_BOXx.
+
+''Ini file'' and ''Templates'' are drop-down menus.  The initialization files must be in the root ''newpagetemplate'' plugin directory and have the ''.ini'' extension. The templates must be in the directory specified by the ''default_tplns'' configuration option.    
+
+
+

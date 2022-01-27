@@ -12,7 +12,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
     {
         // $this->colors->disable();
         $config = $this->colors->wrap('config', 'cyan');
-        $pg = $this->colors->wrap('config', 'cyan');
+        $pg = $this->colors->wrap('page', 'cyan');
         $ini = $this->colors->wrap('ini', 'cyan');
         $options->setHelp(
         "[[-p|--page] page_id] | [[-i|--ini] path-to-ini|config] | [[-t|--tpl] template_id] | [[-u|usrrepl] <macros>]" .                
