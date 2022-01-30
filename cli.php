@@ -22,7 +22,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
             );
         $options->registerOption('version', 'print version', 'v');
         $options->registerOption('page', 'Apply the template to the named page id', 'p');
-        $options->registerOption('usrrepl', 'Macro/Replacent string: @MACRO@,replacement;@MACRO_2@. . . ', 'u');
+        $options->registerOption('usrrepl', 'newpagevars: Macro/Replacent string: @MACRO@,replacement;@MACRO_2@. . . ', 'u');
         $options->registerOption('tmpl', 'Template to apply to the specified page ', 't');
         $options->registerOption('owner', 'User/owner of current process', 'o');
         $options->registerOption('ini', "Name of an ini file. This file must be stored in the root directory" .
