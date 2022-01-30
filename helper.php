@@ -4,7 +4,7 @@ if (!defined('DOKU_INC')) die();
 class helper_plugin_newpagetemplate extends DokuWiki_Plugin
 {
     public $template;
-    private $debug = false;
+    private $debug;
 
     function init($opts, $options, $cli)
     {
@@ -24,9 +24,15 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
 
         if (!empty($template)) {
             $template = wikiFN($template);
-            echo "Template: $template \n";
+            if ($this->debug) { 
+                echo "\n$t\n\n";
+                echo "Template: $template \n";
+            }
             $tpl = $this->pagefromtemplate($opts['tmpl'], $opts['page'], $opts['usrrepl'], $opts['user']); 
-            echo $tpl . "\n";
+            if ($this->debug) { 
+                echo "\n$t\n\n";
+                echo $tpl . "\n";
+            }    
         } else if (isset($opts['ini'])) {
             $this->output_ini($user, $ini,$usrreplace);
         }
