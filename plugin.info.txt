@@ -1,5 +1,5 @@
 base  newpagetemplate
-author Jason Grout, modified: Myron Turner
+author Jason Grout, modified & extended by: Myron Turner
 email turnermm02@shaw.ca
 date 2022-01-30
 name  newpagetemplate Plugin

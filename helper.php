@@ -58,7 +58,9 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
     }
 
     function setOwnership($page, $ns = false) {
-        chown($page, 'www-data');
+        $owner = $this->getConf('web_owner');
+        $group = $this->getConf('web_group');
+        chown($page, $owner);
         chgrp($page, 'www-data');
         if($ns) return;
         chmod($page, 0664); 
