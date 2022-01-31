@@ -45,7 +45,8 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     $cmdL = " -i $ini";     
                     if($userepl != 'none') {
                         $cmdL .= " -u \"$userepl\" ";                        
-                    }                  
+                    }   
+                    $cmdL .= " -s browser ";
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
                 }
@@ -55,8 +56,13 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                 $this->help = true;               
                 $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ; 
                 $this->output = preg_replace("/\n\n/","<br />", htmlentities($this->output));                 
-                $this->output = preg_replace("/(-\w\,\s+--\w+)/","<span style='color:blue;'>$1</span>",$this->output);                 
-                $this->output = preg_replace("/&lt;macros&gt;]/","&lt;macros&gt;]<br />",$this->output);
+                $this->output = preg_replace("/(-\w\,\s+--\w+)/","<span style='color:blue;'>$1</span>",$this->output);               
+                $this->output = preg_replace("/browser]]/","browser]]<br /><br />",$this->output);
+                $this->output = preg_replace("/OPTIONS:/","OPTIONS:<br />",$this->output);
+                $this->output = preg_replace("/https:\/\/www.dokuwiki.org\/plugin:newpagetemplate/",
+                "<a href='https://www.dokuwiki.org/plugin:newpagetemplate'>" . 
+                'https://www.dokuwiki.org/plugin:newpagetemplate</a>',$this->output);
+                  
                 break;                
         }
 

@@ -14,17 +14,23 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
         $config = $this->colors->wrap('config', 'cyan');
         $pg = $this->colors->wrap('page', 'cyan');
         $ini = $this->colors->wrap('ini', 'cyan');
+        $browser = $this->colors->wrap('browser', 'cyan');
+        $cmdLine = $this->colors->wrap('cmdLine', 'cyan');        
         $options->setHelp(
-        "[[-p|--page] page_id] | [[-i|--ini] path-to-ini|config] | [[-t|--tpl] template_id] | [[-u|usrrepl] <macros>]" .                
+    "[[-p|--page] page_id] | [[-i|--ini] path-to-ini|config] | [[-t|--tpl] template_id] | [[-u|usrrepl] <macros>]\n|[[-s|--screen][cmdLine|browser]]\n" .                
         "\n\nThis plugin helps to automate the processing of pages that use new page templates. " .
             "The first command line option must be either '$pg' or '$ini'.  For a complete description see" .
-            " the newpagetemplate documentation at https://www.dokuwiki.org/plugin:newpagetemplate\n"  
+            " the newpagetemplate documentation at https://www.dokuwiki.org/plugin:newpagetemplate"  
             );
         $options->registerOption('version', 'print version', 'v');
         $options->registerOption('page', 'Apply the template to the named page id', 'p');
         $options->registerOption('usrrepl', 'newpagevars: Macro/Replacent string: @MACRO@,replacement;@MACRO_2@. . . ', 'u');
         $options->registerOption('tmpl', 'Template to apply to the specified page ', 't');
         $options->registerOption('owner', 'User/owner of current process', 'o');
+        $options->registerOption('screen', "Output results to screen, either '$browser' or '$cmdLine'." .
+        " The command line output consists of the command line options in raw and parsed format. The browser output" .
+        " consists of the parsed pages.", 's');
+        
         $options->registerOption('ini', "Name of an ini file. This file must be stored in the root directory" .
             " of the newpagetemplate plugin. Its format and functioning are described on the newpagetemplate" .
             " plugin page. To use the ini file specified in the plugin's Configuration Settings, this option must be set to '$config'.", 'i');
@@ -70,6 +76,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
         $usrrepl = "";
         $user = "";
         $ini = false;
+        $screen = "";
         if ($config) {
             $ini = array_shift($opts);
         } else $page = array_shift($opts);
@@ -92,6 +99,9 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
                 case 'c':
                     $user = $opts[$i + 1];
                     break;
+                case 'screen':
+                case 's':
+                     $screen =  $opts[$i + 1];               
             }
         }
         if (!$user) {
@@ -101,7 +111,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
             }
         }
 
-        return array('page' => $page, 'usrrepl' => $usrrepl, 'tmpl' => $tmpl, 'user' => $user, 'ini' => $ini);
+        return array('page' => $page, 'usrrepl' => $usrrepl, 'tmpl' => $tmpl, 'user' => $user, 'ini' => $ini, 'screen' => $screen);
     }
 
     public function raw_commandLineOpts($opts = "", $clopts = "", $dbg = false)

@@ -4,7 +4,7 @@ if (!defined('DOKU_INC')) die();
 class helper_plugin_newpagetemplate extends DokuWiki_Plugin
 {
     public $template;
-    private $debug;
+    private $screen;
 
     function init($opts, $options, $cli)
     {
@@ -14,22 +14,25 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         $overwrite = $opts['overwr'];
         $ini = $opts['ini'];
         $user = $opts['user'];
+        $screen = $opts['screen'];
         $ini = $opts['ini'];
 
-        if ($this->debug) {
+        if ($screen && $screen == 'cmdLine') {
             $cli_opts = $options->getArgs();
             $cli->raw_commandLineOpts($cli_opts, $opts, 1);
             return;
         }
-
+        else if($screen) {
+            $this->screen = $screen;
+        }
         if (!empty($template)) {
             $template = wikiFN($template);
-            if ($this->debug) { 
+            if ($this->screen) { 
                 echo "\n$t\n\n";
                 echo "Template: $template \n";
             }
             $tpl = $this->pagefromtemplate($opts['tmpl'], $opts['page'], $opts['usrrepl'], $opts['user']); 
-            if ($this->debug) { 
+            if ($this->screen) { 
                 echo "\n$t\n\n";
                 echo $tpl . "\n";
             }    
@@ -166,10 +169,10 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             $pages = $ini[$t]['page'];
             $newpagevars = $ini[$t]['newpagevars'];
             if (is_array($newpagevars)) {
-               if ($this->debug) echo "\n$t\n\n";
+               if ($this->screen) echo "\n$t\n\n";
                $this->process_array($pages, $newpagevars, $t, $user,$usrreplace);
             } else {
-                if ($this->debug) echo "\n$t\n\n";
+                if ($this->screen) echo "\n$t\n\n";
                 $this->process_single($pages, $newpagevars, $t, $user,$usrreplace);
             }
         }
@@ -183,7 +186,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             }
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars[$i], $user);
             $this->writePage($pages[$i], $res);
-            if ($this->debug) {            
+            if ($this->screen) {            
                 echo "Output: " . "\n" . $res . "\n";
                 echo "\n===================\n";
             }
@@ -200,7 +203,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         for ($i = 0; $i < count($pages); $i++) {
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
             $this->writePage($pages[$i], $res);
-            if ($this->debug) {            
+            if ($this->screen) {            
                 echo "Output: " . "\n" . $res . "\n";
                 echo "\n===================\n";
             }
