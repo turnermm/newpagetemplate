@@ -38,6 +38,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     if($userepl != 'none') {
                         $cmdL .= " -u \"$userepl\" ";
                     }
+                    $cmdL .= " -s browser ";
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
                 }
