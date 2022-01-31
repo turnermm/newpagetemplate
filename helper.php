@@ -38,6 +38,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             }    
         } else if (isset($opts['ini'])) {
             $this->output_ini($user, $ini,$usrreplace);
+            return;
         }
         $this->writePage($page,$tpl);
     }
