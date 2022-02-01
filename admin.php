@@ -51,7 +51,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
                 }
-                $this->output = preg_replace("/\n+/","<br />", htmlentities($this->output));
+                $this->output = preg_replace("/\n+/","<br />", $this->output);
                 break;                
              case 'help': 
                 $this->help = true;               

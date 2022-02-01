@@ -31,7 +31,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             }
             $tpl = $this->pagefromtemplate($opts['tmpl'], $opts['page'], $opts['usrrepl'], $opts['user']); 
             if ($this->screen) {                
-                echo $tpl . "\n";
+                echo htmlentities($tpl) . "\n";
             }    
         } else if (isset($opts['ini'])) {
             $this->output_ini($user, $ini,$usrreplace);
@@ -166,9 +166,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         foreach ($templ as $t) {
             $pages = $ini[$t]['page'];
             $newpagevars = $ini[$t]['newpagevars'];
-            if ($this->screen) echo "\nTemplate: $t\n\n";
             if (is_array($newpagevars)) {
-              
                $this->process_array($pages, $newpagevars, $t, $user,$usrreplace);
             } else {               
                 $this->process_single($pages, $newpagevars, $t, $user,$usrreplace);
@@ -184,9 +182,11 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             }
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars[$i], $user);
             $this->writePage($pages[$i], $res);
-            if ($this->screen) {            
-                echo "Output: " . "\n" . $res . "\n";
-                echo "\n===================\n";
+            if ($this->screen) { 
+                echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
+                echo "\n<tr><th>Template: $tpl</th></tr>\n";                
+                echo "<tr><td>Output: " . "\n" . htmlentities($res) . "</td></tr>\n";
+                echo "</table>"; 
             }
         }
 
@@ -201,9 +201,11 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         for ($i = 0; $i < count($pages); $i++) {
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
             $this->writePage($pages[$i], $res);
-            if ($this->screen) {            
-                echo "Output: " . "\n" . $res . "\n";
-                echo "\n===================\n";
+            if ($this->screen) {   
+               echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
+                 echo "\n<tr><th>Template: $tpl</th></tr>\n";            
+                 echo "<tr><td>Output: " . "\n" . htmlentities($res) . "</td></tr>\n";
+                 echo "</table>";
             }
         }
     }
