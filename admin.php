@@ -102,8 +102,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         ptln('<div style="line-height:2"><input type="submit" name="cmd[submit]"  value="' . $this->getLang('btn_submit') . '" />');
                
         ptln('<input type = "button" onclick=" nptpl_toggle(\'#nptpl_howto\')" value ="'. $this->getLang('howto') .'">&nbsp;');
-        ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>');
-
+        ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>'); 
         ptln('</form>');     
  
         if($this->help) {
@@ -114,6 +113,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         ptln('<br /><div id="nptpl_output" style="display:'. $display .'; border:1px black solid;padding:12px 12px 12px 8px;height:400px;overflow:auto;">' . $this->output);
         ptln('<button onclick=" nptpl_toggle(\'#nptpl_output\')">'. $this->getLang('close') .'</button>&nbsp;'); 
         ptln('</div>');
+        ptln('<button style = "display:'. $display .';" onclick=" nptpl_toggle(\'#nptpl_output\')">'. $this->getLang('toggle') .'</button>&nbsp;');        
     }
 
     function ini_files()
