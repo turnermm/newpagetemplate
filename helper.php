@@ -25,15 +25,12 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         else if($screen) {
             $this->screen = $screen;
         }
-        if (!empty($template)) {
-            $template = wikiFN($template);
-            if ($this->screen) { 
-                echo "\n$t\n\n";
+        if (!empty($template)) {           
+            if ($this->screen) {                 
                 echo "Template: $template \n";
             }
             $tpl = $this->pagefromtemplate($opts['tmpl'], $opts['page'], $opts['usrrepl'], $opts['user']); 
-            if ($this->screen) { 
-                echo "\n$t\n\n";
+            if ($this->screen) {                
                 echo $tpl . "\n";
             }    
         } else if (isset($opts['ini'])) {
@@ -169,11 +166,11 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         foreach ($templ as $t) {
             $pages = $ini[$t]['page'];
             $newpagevars = $ini[$t]['newpagevars'];
+            if ($this->screen) echo "\nTemplate: $t\n\n";
             if (is_array($newpagevars)) {
-               if ($this->screen) echo "\n$t\n\n";
+              
                $this->process_array($pages, $newpagevars, $t, $user,$usrreplace);
-            } else {
-                if ($this->screen) echo "\n$t\n\n";
+            } else {               
                 $this->process_single($pages, $newpagevars, $t, $user,$usrreplace);
             }
         }
