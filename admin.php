@@ -23,6 +23,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         global $INPUT;
         $ini = $INPUT->str('ini_file','none');
         $tpl = $INPUT->str('tpl_file','none');
+        $nosave = $INPUT->str('nosave','none');      
         $userepl = $INPUT->str('userrelpl','none');
         $tplns = $this->getConf('default_tplns');
         $this->help = false;
@@ -38,7 +39,10 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     if($userepl != 'none') {
                         $cmdL .= " -u \"$userepl\" ";
                     }
-                    $cmdL .= " -s browser ";
+                    $cmdL .= " -s admin ";
+                    if($nosave == 'on') {                    
+                        $cmdL .= " -n true ";
+                    }                    
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
                 }
@@ -47,7 +51,10 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     if($userepl != 'none') {
                         $cmdL .= " -u \"$userepl\" ";                        
                     }   
-                    $cmdL .= " -s browser ";
+                    $cmdL .= " -s admin ";
+                    if($nosave == 'on') {                    
+                        $cmdL .= " -n true ";
+                    }
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
                 }
@@ -103,6 +110,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                
         ptln('<input type = "button" onclick=" nptpl_toggle(\'#nptpl_howto\')" value ="'. $this->getLang('howto') .'">&nbsp;');
         ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>'); 
+        ptln($this->getLang('nosave') . '<input type="checkbox"  name="nosave"/></div>');         
         ptln('</form>');     
  
         if($this->help) {

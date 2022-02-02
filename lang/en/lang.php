@@ -21,4 +21,5 @@ $lang['userrelpl'] = 'User replacements';
 $lang['close'] = 'Close';
 $lang['clear'] = 'Clear output';
 $lang['howto'] = "Instructions";
-$lang['toggle'] = "Toggle output";
+$lang['toggle'] = "Toggle";
+$lang['nosave'] = "Test (no save) ";
