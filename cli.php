@@ -15,7 +15,9 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
         $pg = $this->colors->wrap('page', 'cyan');
         $ini = $this->colors->wrap('ini', 'cyan');
         $browser = $this->colors->wrap('browser', 'cyan');
-        $cmdLine = $this->colors->wrap('cmdLine', 'cyan');        
+        $cmdLine = $this->colors->wrap('cmdLine', 'cyan');
+        $browser = $this->colors->wrap('browser', 'cyan');
+        $nosave = $this->colors->wrap('true', 'cyan');          
         $options->setHelp(
     "[[-p|--page] page_id] | [[-i|--ini] path-to-ini|config] | [[-t|--tpl] template_id] | [[-u|usrrepl] <macros>]\n|[[-s|--screen][cmdLine|browser]]\n" .                
         "\n\nThis plugin helps to automate the processing of pages that use new page templates. " .
@@ -27,12 +29,15 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
         $options->registerOption('usrrepl', 'newpagevars: Macro/Replacent string: @MACRO@,replacement;@MACRO_2@. . . ', 'u');
         $options->registerOption('tmpl', 'Template to apply to the specified page ', 't');
         $options->registerOption('owner', 'User/owner of current process', 'o');
-        $options->registerOption('screen', "Output results to screen, either '$browser' or '$cmdLine'." .
-        " The command line output consists of the command line options in raw and parsed format. The browser output" .
-        " consists of the parsed pages.", 's');
+        $options->registerOption('nosave', 'Do not save pages. The processed data will be printed to the screen but not saved.' .
+             " This option should be set to '$nosave' and requires that the screen option be set to $browser." , 'n');       
+        $options->registerOption('screen', "Output results to screen; this option takes one of two parameters: either '$browser' or '$cmdLine'." 
+        . " The command line output consists of the command line options in raw and parsed format. The browser output" .
+        " consists of the parsed page data.", 's');  
         
         $options->registerOption('ini', "Name of an ini file. This file must be stored in the root directory" .
-            " of the newpagetemplate plugin. Its format and functioning are described on the newpagetemplate" .
+            " of the newpagetemplate plugin. The ini files make it possible to parse and save data to multiple pages. " .
+            " Its format and functioning are described on the newpagetemplate" .
             " plugin page. To use the ini file specified in the plugin's Configuration Settings, this option must be set to '$config'.", 'i');
 
     }
@@ -101,7 +106,12 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
                     break;
                 case 'screen':
                 case 's':
-                     $screen =  $opts[$i + 1];               
+                     $screen =  $opts[$i + 1]; 
+                     break;
+                case 'nosave':
+                case 'n':
+                     $nosave =  $opts[$i + 1]; 
+                     break;                        
             }
         }
         if (!$user) {
@@ -111,7 +121,8 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
             }
         }
 
-        return array('page' => $page, 'usrrepl' => $usrrepl, 'tmpl' => $tmpl, 'user' => $user, 'ini' => $ini, 'screen' => $screen);
+        return array('page' => $page, 'usrrepl' => $usrrepl, 'tmpl' => $tmpl, 'user' => $user, 'ini' => $ini, 'screen' => $screen,
+                     'nosave' => $nosave);
     }
 
     public function raw_commandLineOpts($opts = "", $clopts = "", $dbg = false)
