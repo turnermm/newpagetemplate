@@ -65,7 +65,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                 $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ; 
                 $this->output = preg_replace("/\n\n/","<br />", htmlentities($this->output));                 
                 $this->output = preg_replace("/(-\w\,\s+--\w+)/","<span style='color:blue;'>$1</span>",$this->output);               
-                $this->output = preg_replace("/browser]]/","browser]]<br /><br />",$this->output);
+                $this->output = preg_replace("/browser]]/","browser]]",$this->output);
                 $this->output = preg_replace("/OPTIONS:/","OPTIONS:<br />",$this->output);
                 $this->output = preg_replace("/https:\/\/www.dokuwiki.org\/plugin:newpagetemplate/",
                 "<a href='https://www.dokuwiki.org/plugin:newpagetemplate'>" . 

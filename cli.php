@@ -19,7 +19,7 @@ class cli_plugin_newpagetemplate extends DokuWiki_CLI_Plugin
         $browser = $this->colors->wrap('browser', 'cyan');
         $nosave = $this->colors->wrap('true', 'cyan');          
         $options->setHelp(
-    "[[-p|--page] page_id] | [[-i|--ini] path-to-ini|config] | [[-t|--tpl] template_id] | [[-u|usrrepl] <macros>]\n|[[-s|--screen][cmdLine|browser]]\n" .                
+    "[[-p|--page] page_id] | [[-i|--ini] path-to-ini|config] | [[-t|--tpl] template_id] | [[-u|usrrepl] <macros>]\n|[[-s|--screen][cmdLine|browser]]|[[--nosave|-n]true]\n" .                
         "\n\nThis plugin helps to automate the processing of pages that use new page templates. " .
             "The first command line option must be either '$pg' or '$ini'.  For a complete description see" .
             " the newpagetemplate documentation at https://www.dokuwiki.org/plugin:newpagetemplate"  
