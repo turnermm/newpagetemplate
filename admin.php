@@ -26,6 +26,8 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         $nosave = $INPUT->str('nosave','none');      
         $userepl = $INPUT->str('userrelpl','none');
         $tplns = $this->getConf('default_tplns');
+        $user = $INPUT->server->str('REMOTE_USER', 'none');
+
         $this->help = false;
         switch (key($_REQUEST['cmd'])) { 
             case 'submit' :            
@@ -42,7 +44,10 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     $cmdL .= " -s admin ";
                     if($nosave == 'on') {                    
                         $cmdL .= " -n true ";
-                    }                    
+                    } 
+                    if($user != 'none') {
+                      $cmdL .= " -c $user ";
+                    }
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
                 }
@@ -54,6 +59,9 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     $cmdL .= " -s admin ";
                     if($nosave == 'on') {                    
                         $cmdL .= " -n true ";
+                    }
+                    if($user != 'none') {
+                      $cmdL .= " -c $user ";
                     }
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
@@ -110,7 +118,8 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                
         ptln('<input type = "button" onclick=" nptpl_toggle(\'#nptpl_howto\')" value ="'. $this->getLang('howto') .'">&nbsp;');
         ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>'); 
-        ptln($this->getLang('nosave') . '<input type="checkbox"  name="nosave"/></div>');         
+        ptln($this->getLang('nosave') . '&nbsp;<input type="checkbox" checked  name="nosave"/>&nbsp;');
+        ptln($this->getLang('existing') . '&nbsp;<input type="checkbox"  name="existing"/></div>');         
         ptln('</form>');     
  
         if($this->help) {

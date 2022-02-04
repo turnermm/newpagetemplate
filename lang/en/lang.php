@@ -22,4 +22,5 @@ $lang['close'] = 'Close';
 $lang['clear'] = 'Clear output';
 $lang['howto'] = "Instructions";
 $lang['toggle'] = "Toggle";
-$lang['nosave'] = "Test (no save) ";
+$lang['nosave'] = "Test (do not save pages):";
+$lang['existing'] = "Do not overwrite existing pages:";

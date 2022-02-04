@@ -26,9 +26,9 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         else if($screen) {
             $this->screen = $screen;
         }
-       
+      
         if($nosave) {
-            $this->nosave = true;
+            $this->nosave = $nosave;
         }
       
         if (!empty($template)) {           
@@ -43,16 +43,20 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             $this->output_ini($user, $ini,$usrreplace);
             return;
         }
-        $this->writePage($page,$tpl);
+        echo $this->writePage($page,$tpl);
     }
 
     function writePage($page, $tpl)
     {
-        if($this->nosave) {
-            //echo "Not Saving $page\n";
-            return;
+        if($this->nosave && $this->nosave == 'true') {
+            return "Not Saving $page\n";            
         }
         $file = wikiFn($page); 
+        if($this->nosave && $this->nosave == 'existing') {
+            if(file_exists($file)) {
+                return "Not Saving existing file: $file\n";               
+            }
+        }        
         $summary = 'pagetemplate cli';
         saveWikiText($page, $tpl, $summary, $minor = false);
         $this->setOwnership($file);        
@@ -65,7 +69,8 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         $this->setOwnership($meta);  
         
         $meta = metaFN($page,'.changes');
-        $this->setOwnership($meta);                         
+        $this->setOwnership($meta); 
+        return "";        
     }
 
     function setOwnership($page, $ns = false) {
@@ -191,18 +196,24 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
                 $newpagevars[$i] .= ";$usrreplace";
             }
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars[$i], $user);
-            $this->writePage($pages[$i], $res);
+            $result = $this->writePage($pages[$i], $res);
             if ($this->screen) { 
                     if($this->screen == 'admin') {
                         echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
                         echo "\n<tr><th>Template: $tpl</th></tr>\n";                
                         echo "<tr><td>Output: " . "\n" . htmlentities($res) . "</td></tr>\n";
+                        if($result) {
+                            echo "\n<tr><th>$result</th></tr>\n";
+                        }
                         echo "</table>"; 
                 }
                 else {
                     echo "\n===================\n";
                     echo "Template: $tpl\n";
                     echo "$res\n";
+                    if($result) {
+                        echo "$result\n";
+                    }
                 }
             }
         }
@@ -216,22 +227,27 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             $newpagevars .= ";$usrreplace";
         }
         for ($i = 0; $i < count($pages); $i++) {
-            $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
-            $this->writePage($pages[$i], $res);
-            if ($this->screen) { 
-                 if($this->screen == 'admin') {            
-                     echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
-                     echo "\n<tr><th>Template: $tpl</th></tr>\n";            
-                     echo "<tr><td>Output: " . "\n" . htmlentities($res) . "</td></tr>\n";
+        $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
+        $result = $this->writePage($pages[$i], $res);
+        if ($this->screen) { 
+             if($this->screen == 'admin') {            
+                 echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
+                 echo "\n<tr><th>Template: $tpl</th></tr>\n";            
+                 echo "<tr><td>Output: " . "\n" . htmlentities($res) . "</td></tr>\n";
+                 if($result) {
+                     echo "\n<tr><th>$result</th></tr>\n";                                      
                      echo "</table>";
-                }
-                else {
-                     echo "\n===================\n";
-                     echo "Template: $tpl\n";
-                     echo "$res\n";
+               } 
+               else {
+                 echo "\n===================\n";
+                 echo "Template: $tpl\n";
+                 echo "$res\n";
+                 if($result) {
+                    echo "$result\n";
+                 }                     
                }                
             }
         }
     }
-
+  }
 }
