@@ -24,3 +24,4 @@ $lang['howto'] = "Instructions";
 $lang['toggle'] = "Toggle";
 $lang['nosave'] = "Test (do not save pages):";
 $lang['existing'] = "Do not overwrite existing pages:";
+$lang['overwrite'] = "Save all pages:";
