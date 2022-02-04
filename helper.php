@@ -225,7 +225,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
     {
         /* handles mutiple pages but single instance of newpagevars */
         if(!empty($usrreplace)) {
-            $newpagevars .= ";$usrreplace";
+            $newpagevars = "$usrreplace;$newpagevars";
         }
         for ($i = 0; $i < count($pages); $i++) {
         $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
