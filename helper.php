@@ -193,7 +193,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
     {
         for ($i = 0; $i < count($pages); $i++) {
             if(!empty($usrreplace)) {
-                $newpagevars[$i] .= ";$usrreplace";
+                $newpagevars[$i] = "$usrreplace;" . $newpagevars[$i];
             }
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars[$i], $user);
             $result = $this->writePage($pages[$i], $res);
