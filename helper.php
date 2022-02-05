@@ -159,7 +159,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
                 ), $tpl);
 
             // we need the callback to work around strftime's char limit
-            $tpl = preg_replace_callback('/%./', create_function('$m', 'return strftime($m[0]);'), $tpl);
+          $tpl = preg_replace_callback('/%./',function ($m) {return strftime($m[0]); },$tpl);
         }
         if ($this->getConf('skip_unset_macros')) {
             $tpl = preg_replace("/@.*?@/ms", "", $tpl);
