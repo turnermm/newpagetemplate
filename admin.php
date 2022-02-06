@@ -23,8 +23,11 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         global $INPUT;
         $ini = $INPUT->str('ini_file','none');
         $tpl = $INPUT->str('tpl_file','none');
+        $nosave = $INPUT->str('nosave','none');      
         $userepl = $INPUT->str('userrelpl','none');
         $tplns = $this->getConf('default_tplns');
+        $user = $INPUT->server->str('REMOTE_USER', 'none');
+
         $this->help = false;
         switch (key($_REQUEST['cmd'])) { 
             case 'submit' :            
@@ -38,7 +41,13 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     if($userepl != 'none') {
                         $cmdL .= " -u \"$userepl\" ";
                     }
-                    $cmdL .= " -s browser ";
+                    $cmdL .= " -s admin ";
+                    if($nosave == 'on') {                    
+                        $cmdL .= " -n true ";
+                    } 
+                    if($user != 'none') {
+                      $cmdL .= " -c $user ";
+                    }
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
                 }
@@ -47,7 +56,13 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                     if($userepl != 'none') {
                         $cmdL .= " -u \"$userepl\" ";                        
                     }   
-                    $cmdL .= " -s browser ";
+                    $cmdL .= " -s admin ";
+                    if($nosave != 'none') {                    
+                        $cmdL .= " -n $nosave ";
+                    }
+                    if($user != 'none') {
+                      $cmdL .= " -c $user ";
+                    }
                     $this->output = shell_exec(NEWPAGETPL_CMDL  . $cmdL) ;
                     $this->help = true; 
                 }
@@ -58,7 +73,7 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                 $this->output = shell_exec(NEWPAGETPL_CMDL  .'-h') ; 
                 $this->output = preg_replace("/\n\n/","<br />", htmlentities($this->output));                 
                 $this->output = preg_replace("/(-\w\,\s+--\w+)/","<span style='color:blue;'>$1</span>",$this->output);               
-                $this->output = preg_replace("/browser]]/","browser]]<br /><br />",$this->output);
+                $this->output = preg_replace("/browser]]/","browser]]",$this->output);
                 $this->output = preg_replace("/OPTIONS:/","OPTIONS:<br />",$this->output);
                 $this->output = preg_replace("/https:\/\/www.dokuwiki.org\/plugin:newpagetemplate/",
                 "<a href='https://www.dokuwiki.org/plugin:newpagetemplate'>" . 
@@ -103,6 +118,10 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
                
         ptln('<input type = "button" onclick=" nptpl_toggle(\'#nptpl_howto\')" value ="'. $this->getLang('howto') .'">&nbsp;');
         ptln('<input type="submit" name="cmd[help]"  value="' . $this->getLang('btn_help') . '" /></div>'); 
+        ptln('<div>'.$this->getLang('nosave') . '&nbsp;<input type="radio" checked  name="nosave" value = "true"/>&nbsp;');
+        ptln($this->getLang('overwrite') . '&nbsp;<input type="radio" name="nosave" value = "false"/>&nbsp;');        
+        ptln($this->getLang('existing') . '&nbsp;<input type="radio" name="nosave" value="existing"/></div>');     
+
         ptln('</form>');     
  
         if($this->help) {
@@ -111,9 +130,8 @@ class admin_plugin_newpagetemplate extends DokuWiki_Admin_Plugin
         else $display = "none";       
        
         ptln('<br /><div id="nptpl_output" style="display:'. $display .'; border:1px black solid;padding:12px 12px 12px 8px;height:400px;overflow:auto;">' . $this->output);
-        ptln('<button onclick=" nptpl_toggle(\'#nptpl_output\')">'. $this->getLang('close') .'</button>&nbsp;'); 
-        ptln('</div>');
-        ptln('<button style = "display:'. $display .';" onclick=" nptpl_toggle(\'#nptpl_output\')">'. $this->getLang('toggle') .'</button>&nbsp;');        
+        ptln('<button style = "display:'. $display .';" onclick=" nptpl_toggle(\'#nptpl_output\')">'. $this->getLang('close') .'</button>&nbsp;');        
+        ptln('</div>');  
     }
 
     function ini_files()

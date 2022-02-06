@@ -5,7 +5,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
 {
     public $template;
     private $screen;
-
+    private $nosave;
     function init($opts, $options, $cli)
     {
         $page = $opts['page'];
@@ -16,7 +16,8 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         $user = $opts['user'];
         $screen = $opts['screen'];
         $ini = $opts['ini'];
-
+        $nosave =  $opts['nosave'];
+        
         if ($screen && $screen == 'cmdLine') {
             $cli_opts = $options->getArgs();
             $cli->raw_commandLineOpts($cli_opts, $opts, 1);
@@ -25,6 +26,11 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         else if($screen) {
             $this->screen = $screen;
         }
+      
+        if($nosave) {
+            $this->nosave = $nosave;
+        }
+      
         if (!empty($template)) {           
             if ($this->screen) {                 
                 echo "Template: $template \n";
@@ -37,12 +43,20 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
             $this->output_ini($user, $ini,$usrreplace);
             return;
         }
-        $this->writePage($page,$tpl);
+        echo $this->writePage($page,$tpl);
     }
 
     function writePage($page, $tpl)
     {
+        if($this->nosave && $this->nosave == 'true') {
+            return "Not Saving $page\n";            
+        }
         $file = wikiFn($page); 
+        if($this->nosave && $this->nosave == 'existing') {
+            if(file_exists($file)) {
+                return "Not Saving existing page: $page\n";               
+            }
+        }        
         $summary = 'pagetemplate cli';
         saveWikiText($page, $tpl, $summary, $minor = false);
         $this->setOwnership($file);        
@@ -55,7 +69,8 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
         $this->setOwnership($meta);  
         
         $meta = metaFN($page,'.changes');
-        $this->setOwnership($meta);                         
+        $this->setOwnership($meta); 
+        return "Saving $page\n";        
     }
 
     function setOwnership($page, $ns = false) {
@@ -144,7 +159,7 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
                 ), $tpl);
 
             // we need the callback to work around strftime's char limit
-            $tpl = preg_replace_callback('/%./', create_function('$m', 'return strftime($m[0]);'), $tpl);
+          $tpl = preg_replace_callback('/%./',function ($m) {return strftime($m[0]); },$tpl);
         }
         if ($this->getConf('skip_unset_macros')) {
             $tpl = preg_replace("/@.*?@/ms", "", $tpl);
@@ -178,15 +193,29 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
     {
         for ($i = 0; $i < count($pages); $i++) {
             if(!empty($usrreplace)) {
-                $newpagevars[$i] .= ";$usrreplace";
+                $newpagevars[$i] = "$usrreplace;" . $newpagevars[$i];
             }
             $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars[$i], $user);
-            $this->writePage($pages[$i], $res);
+            $result = $this->writePage($pages[$i], $res);
+                   
             if ($this->screen) { 
-                echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
-                echo "\n<tr><th>Template: $tpl</th></tr>\n";                
-                echo "<tr><td>Output: " . "\n" . htmlentities($res) . "</td></tr>\n";
-                echo "</table>"; 
+                    if($this->screen == 'admin') {
+                        echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
+                        echo "\n<tr><th>Template: $tpl</th></tr>\n";                
+                        echo "<tr><td>Output: " . "\n" . htmlentities($res) . "</td></tr>\n";
+                        if($result) {
+                            echo "\n<tr><td>$result</td></tr>\n";
+                        }
+                        echo "</table>"; 
+                }
+                else {
+                    echo "\n===================\n";
+                    echo "Template: $tpl\n";
+                    echo "$res\n";
+                    if($result) {
+                        echo "$result\n";
+                    }
+                }
             }
         }
 
@@ -196,18 +225,31 @@ class helper_plugin_newpagetemplate extends DokuWiki_Plugin
     {
         /* handles mutiple pages but single instance of newpagevars */
         if(!empty($usrreplace)) {
-            $newpagevars .= ";$usrreplace";
+            $newpagevars = "$usrreplace;$newpagevars";
         }
         for ($i = 0; $i < count($pages); $i++) {
-            $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
-            $this->writePage($pages[$i], $res);
-            if ($this->screen) {   
-               echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
+        $res = $this->pagefromtemplate($tpl, $pages[$i], $newpagevars, $user);
+        $result = $this->writePage($pages[$i], $res);
+        
+        if ($this->screen) { 
+             if($this->screen == 'admin') {            
+                 echo "<table class = 'newpagevars' style = 'width:90%;margin:auto;'>\n"; 
                  echo "\n<tr><th>Template: $tpl</th></tr>\n";            
                  echo "<tr><td>Output: " . "\n" . htmlentities($res) . "</td></tr>\n";
-                 echo "</table>";
+                 if($result) {
+                     echo "\n<tr><td>$result</td></tr>\n";                                      
+                     echo "</table>";
+               }             
             }
+           else {
+             echo "\n===================\n";
+             echo "Template: $tpl\n";
+             echo "$res\n";
+             if($result) {
+                echo "$result\n";
+             }                     
+           }               
         }
     }
-
+  }
 }
