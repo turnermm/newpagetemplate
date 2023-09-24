@@ -63,7 +63,10 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
     if($this->done) return;
     $this->done=true;
 
-    if(strlen(trim($_REQUEST['newpagetemplate']))>0) {
+    global $INPUT;
+    $template = trim($INPUT->str('newpagetemplate'));
+
+    if(!empty($template)) {
       if(!$this->allow) {
          return;
       }
@@ -71,11 +74,15 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
       global $INFO;
       global $ID;
 
-      $tpl = io_readFile(wikiFN($_REQUEST['newpagetemplate']));
+      $tpl = io_readFile(wikiFN($template));
 
       if($this->getConf('userreplace')) {
-        $stringvars =
-            array_map(function($v) { return explode(",",$v,2);}, explode(';',$_REQUEST['newpagevars'])); 
+        $stringvars = array_map(
+            function($v) {
+                return sexplode(',', $v, 2, '');
+            },
+            explode(';', $INPUT->str('newpagevars'))
+        );
         foreach($stringvars as $value) {
              $tpl = str_replace(trim($value[0]),hsc(trim($value[1])),$tpl);
         }
