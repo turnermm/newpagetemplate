@@ -3,23 +3,23 @@
  *
  * @license    GPL 2 (http://www.gnu.org/licenses/gpl.html)
  * @author     Jason Grout <jason-doku@creativetrax.com>>
- * 
- * Modifications by Sergio (1 Apr 2007), an unidentified author, 
+ *
+ * Modifications by Sergio (1 Apr 2007), an unidentified author,
  * and  Niko Paltzer (15 Jan 2010).
  *
  *  brought up-to-date with current Dokuwiki Event changes
  *  and event handling by Myron Turner (April 7 2011);
  *  new security features (September 2 2011)
- *  turnermm02@shaw.ca     
+ *  turnermm02@shaw.ca
  */
- 
+
 // must be run within Dokuwiki
 if(!defined('DOKU_INC')) die();
- 
+
 if(!defined('DOKU_PLUGIN')) define('DOKU_PLUGIN',DOKU_INC.'lib/plugins/');
 require_once(DOKU_PLUGIN.'action.php');
 require_once(DOKU_INC.'inc/init.php');
- 
+
 class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
    var $done = false;
    var $allow = true;
@@ -36,74 +36,73 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
       'url'    => '',
     );
   }
- 
+
   /**
    * register the eventhandlers
-   *  Modified by 
+   *  Modified by
    *  @author Myron Turner
-   *  turnermm02@shaw.ca     
+   *  turnermm02@shaw.ca
    */
   function register(Doku_Event_Handler $contr){
 
     $contr->register_hook('COMMON_PAGE_FROMTEMPLATE', 'BEFORE', $this, 'pagefromtemplate', array());
     $contr->register_hook('COMMON_PAGETPL_LOAD', 'BEFORE', $this, 'pagefromtemplate', array());
-	$contr->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'check_acl', array());
-	$contr->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, 'write_msg', array());
-	$contr->register_hook('HTML_PAGE_FROMTEMPLATE', 'BEFORE', $this, 'pagefromtemplate', array());
+    $contr->register_hook('DOKUWIKI_STARTED', 'AFTER', $this, 'check_acl', array());
+    $contr->register_hook('TPL_CONTENT_DISPLAY', 'BEFORE', $this, 'write_msg', array());
+    $contr->register_hook('HTML_PAGE_FROMTEMPLATE', 'BEFORE', $this, 'pagefromtemplate', array());
   }
 
   /**
    *  pagefromtemplate
-   *  Modified by 
+   *  Modified by
    *  @author Myron Turner
-   *  turnermm02@shaw.ca     
+   *  turnermm02@shaw.ca
    */
- 
-  function pagefromtemplate(Doku_Event $event, $param) {  
+
+  function pagefromtemplate(Doku_Event $event, $param) {
     if($this->done) return;
     $this->done=true;
-    
+
     if(strlen(trim($_REQUEST['newpagetemplate']))>0) {
-	if(!$this->allow) {	 
-	   return ;
-	}
+      if(!$this->allow) {
+         return;
+      }
       global $conf;
       global $INFO;
       global $ID;
-	
+
       $tpl = io_readFile(wikiFN($_REQUEST['newpagetemplate']));
- 
+
       if($this->getConf('userreplace')) {
         $stringvars =
             array_map(function($v) { return explode(",",$v,2);}, explode(';',$_REQUEST['newpagevars'])); 
         foreach($stringvars as $value) {
              $tpl = str_replace(trim($value[0]),hsc(trim($value[1])),$tpl);
-	    }
-     }
- 
+        }
+      }
+
       if($this->getConf('standardreplace')) {
         // replace placeholders
-        $file = noNS($ID);       
+        $file = noNS($ID);
         $page = cleanID($file) ;
-        if($this->getConf('prettytitles')) {        
-            $title= str_replace('_',' ',$page);
+        if($this->getConf('prettytitles')) {
+          $title= str_replace('_',' ',$page);
         }
-       else {
-           $title = $page;
-       }
-         if(class_exists('\dokuwiki\\Utf8\PhpString')) {
-            $ucfirst = '\dokuwiki\Utf8\PhpString::ucfirst';
-            $ucwords = '\dokuwiki\\Utf8\PhpString::ucwords';
-            $ucupper = '\dokuwiki\\Utf8\PhpString::strtoupper';
-          
+        else {
+          $title = $page;
         }
-       else {
-            $ucfirst = 'utf8_ucfirst';
-            $ucwords = 'utf8_ucwords';
-            $ucupper = 'utf8_strtoupper';
-           
-        }    
-        
+
+        if(class_exists('\dokuwiki\\Utf8\PhpString')) {
+          $ucfirst = '\dokuwiki\Utf8\PhpString::ucfirst';
+          $ucwords = '\dokuwiki\\Utf8\PhpString::ucwords';
+          $ucupper = '\dokuwiki\\Utf8\PhpString::strtoupper';
+        }
+        else {
+          $ucfirst = 'utf8_ucfirst';
+          $ucwords = 'utf8_ucwords';
+          $ucupper = 'utf8_strtoupper';
+        }
+
         $tpl = str_replace(array(
                               '@ID@',
                               '@NS@',
@@ -143,21 +142,28 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
                               $INFO['userinfo']['mail'],
                               $conf['dformat'],
                               $event->name ,
-                           ), $tpl);
- 
+                           ),
+                           $tpl
+        );
+
         // we need the callback to work around strftime's char limit
-          $tpl = preg_replace_callback('/%./',function ($m) {return strftime($m[0]); },$tpl);
+        $tpl = preg_replace_callback('/%./',
+            function ($m) {
+              return strftime($m[0]);
+            },
+            $tpl
+        );
       }
       if($this->getConf('skip_unset_macros')) {
-          $tpl = preg_replace("/@.*?@/ms","",$tpl);
+        $tpl = preg_replace("/@.*?@/ms","",$tpl);
       }
-	  if($event->name == 'HTML_PAGE_FROMTEMPLATE') {
-	     $event->result=$tpl;
-	  }
-	  else { 
-         $event->data['tpl'] = $tpl;
+      if($event->name == 'HTML_PAGE_FROMTEMPLATE') {
+        $event->result=$tpl;
       }
-      $event->preventDefault(); 
+      else {
+        $event->data['tpl'] = $tpl;
+      }
+      $event->preventDefault();
     }
   }
 
@@ -172,14 +178,14 @@ class action_plugin_newpagetemplate extends DokuWiki_Action_Plugin {
           $this->allow = false;
       }
    }
-   
+
   function write_msg (&$event,$param) {
-    if($this->allow) return; 
+    if($this->allow) return;
     global $ID,$INPUT;
-    
+
     echo"<h1> Permission Denied </h1>";
-    echo "You do not have access to the template  " . htmlentities($INPUT->str('newpagetemplate')) . '</br>';	 
-	unlock($ID); 
-	$event->preventDefault(); 
+    echo "You do not have access to the template  " . htmlentities($INPUT->str('newpagetemplate')) . '</br>';
+    unlock($ID);
+    $event->preventDefault();
   }
 }
