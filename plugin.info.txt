@@ -1,7 +1,7 @@
 base   newpagetemplate
 author Damien Regad, Jason Grout, Myron Turner
 email  dregad@mantisbt.org
-date   2023-10-14
+date   2023-10-19
 name   newpagetemplate Plugin
 desc   Load namespace-style template into new file from URL
 url    https://www.dokuwiki.org/plugin:newpagetemplate
